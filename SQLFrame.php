@@ -14,8 +14,10 @@
 require_once 'groupby.php';
 class SQLFrame {
     var $groups;
+    var $tipo;
     static $pos_file=0;
-    function SQLFrame(){
+    function SQLFrame($tipo){
+        $this->tipo=$tipo;
         $this->groups = array();
         $xml = file_get_contents("config.xml"); 
         $DOM = new DOMDocument('1.0', 'utf-8');
@@ -87,7 +89,7 @@ class SQLFrame {
             $this->printar($groups,$i,$row,$result);
             $i--;
             $group = $groups[$i];
-            $group->printar();
+            $group->printar($this->tipo);
             $group->reset();
             $group->sum($row,$result);
         }
