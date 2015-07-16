@@ -34,16 +34,37 @@ class Sumatorio {
     public function reset(){
         $this->total=0;
     }
-    public function printar(){
+    public function printar($tipo){
+        if(strcmp($tipo, "html")==0){
+            $this->printar_html();
+        }
+        else{
+            $this->printar_csv();
+        }
+    }
+    public function printar_html(){
         while(SQLFrame::$pos_file<$this->posicion){
             echo "<td>&nbsp;</td>";
             SQLFrame::$pos_file++;
         }
-        if(is_float($this->total)){
+        if(is_float($this->total)==0){
             echo "<td>".number_format($this->total,2)."</td>";
         }
         else{
             echo "<td>$this->total</td>";
+        }
+        SQLFrame::$pos_file++;
+    }
+    public function printar_csv(){
+        while(SQLFrame::$pos_file<$this->posicion){
+            echo ";";
+            SQLFrame::$pos_file++;
+        }
+        if(is_float($this->total)){
+            echo number_format($this->total,2).";";
+        }
+        else{
+            echo $this->total.";";
         }
         SQLFrame::$pos_file++;
     }
