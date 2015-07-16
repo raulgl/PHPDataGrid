@@ -15,38 +15,69 @@ require_once 'SQLFrame.php';
 require_once 'funciones.php';
 class DataGrid {
     
-    public static function printar($query){
+    public static function printar($query,$tipo){
         cargar_configuracion();
-        $sqlframe = new SQLFrame();
+        $sqlframe = new SQLFrame($tipo);
         $con = conectar();
         $data = mysql_query("$query", $con) or die(mysql_error());
-        echo "<table class='tabla'>";
-        $i=0;
-        echo "<tr class='cabecera'>";
+        if(strcmp($tipo, "html")==0){
+            echo "<table class='tabla'>";
+            echo "<tr class='cabecera'>";
+        }
+        $i=0;        
         while($i<mysql_num_fields($data)){
-            echo "<td>".mysql_field_name($data,$i)."</td>";
+            if(strcmp($tipo, "html")==0){
+                echo "<td>".mysql_field_name($data,$i)."</td>";
+            }
+            else{
+                echo mysql_field_name($data,$i).";";
+            }
             $i++;
         }
-        echo "</tr>";
+        if(strcmp($tipo, "html")==0){
+            echo "</tr>";
+        }
+        else{
+            echo "\n"; 
+        }
         
         while($row = mysql_fetch_assoc($data)){ 
             
             $sqlframe->add($row, $data);
-            echo "<tr class='fila'>";
+            if(strcmp($tipo, "html")==0){
+                echo "<tr class='fila'>";
+            }
             $i=0;
             while($i<mysql_num_fields($data)){
                
                 if(is_float($row[mysql_field_name($data,$i)]+0)){
-                    echo "<td>".number_format($row[mysql_field_name($data,$i)],2)."</td>";
+                    if(strcmp($tipo, "html")==0){
+                        echo "<td>".number_format($row[mysql_field_name($data,$i)],2)."</td>";
+                    }
+                    else{
+                        echo number_format($row[mysql_field_name($data,$i)],2).";";
+                    }
                 }
                 else{
-                   echo "<td>".$row[mysql_field_name($data,$i)]."</td>"; 
+                   if(strcmp($tipo, "html")==0){ 
+                    echo "<td>".$row[mysql_field_name($data,$i)]."</td>"; 
+                   }
+                   else{
+                       echo $row[mysql_field_name($data,$i)].";";
+                   }
                 }
                 $i++;
             }
-            echo "<tr>";
+            if(strcmp($tipo, "html")==0){
+                echo "</tr>";
+            }
+            else{
+                echo "\n"; 
+            }
         }
         $sqlframe->printar_todos();
-        echo "</table>";
+        if(strcmp($tipo, "html")==0){
+            echo "</table>";
+        }
     }
 }
