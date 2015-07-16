@@ -19,7 +19,7 @@ class groupby {
     var $sumatorios;
     var $actual;
     var $class;
-    function groupby($nom,$pos,$class){
+    function groupby($nom,$pos,$class=''){
         $this->nombre=trim($nom);
         $this->posicion=$pos;
         $this->sumatorios = array();
@@ -52,7 +52,15 @@ class groupby {
             return false;
         }
     }
-    public function printar(){
+    public function printar($tipo){
+        if(strcmp($tipo, "html")==0){
+            $this->printar_html();
+        }
+        else{
+           $this->printar_csv(); 
+        }
+    }
+    public function printar_html(){
         echo "<tr class='$this->class'>";
         while(SQLFrame::$pos_file<$this->posicion){
             echo "<td>&nbsp;</td>";
@@ -61,9 +69,22 @@ class groupby {
         echo "<td>TOTAL</td>";
         SQLFrame::$pos_file++;
         foreach($this->sumatorios as $suma){
-            $suma->printar();
+            $suma->printar("html");
         } 
         echo "</tr>";
+        SQLFrame::$pos_file=0;
+    }
+    public function printar_csv(){
+        while(SQLFrame::$pos_file<$this->posicion){
+            echo ";";
+            SQLFrame::$pos_file++;
+        }
+        echo "TOTAL;";
+        SQLFrame::$pos_file++;
+        foreach($this->sumatorios as $suma){
+            $suma->printar("csv");
+        } 
+        echo "\n";
         SQLFrame::$pos_file=0;
     }
     public function sum($row,$result){
