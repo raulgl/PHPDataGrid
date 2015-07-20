@@ -91,4 +91,8 @@ Importante: el orden de los group by tiene que ser de mas generico a mas especif
 1º TOTAL: todas las entradas.
 2º Actvidad: todas las entradas de todos los espectaculos de una determinada actividad
 3º Espectaculos: todas las entradas de un espectaculo en concreto.
-
+NUEVA ACTUALIZACIÓN: exportar a CSV.
+A partir de ahora para exportar a HTML, la llamada tiene que ser:
+DataGrid::printar($query,"html");
+Si se quiere exportar a CSV entonces la llamada es:
+DataGrid::printar($query,"csv");
