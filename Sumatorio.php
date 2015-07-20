@@ -34,7 +34,7 @@ class Sumatorio {
     public function reset(){
         $this->total=0;
     }
-    public function printar($tipo,$linea,&$img){
+    public function printar($tipo,$linea=0,&$img=NULL){
         if(strcmp($tipo, "html")==0){
             $this->printar_html();
         }
