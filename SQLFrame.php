@@ -19,13 +19,14 @@ class SQLFrame {
     function SQLFrame($tipo){
         $this->tipo=$tipo;
         $this->groups = array();
-        $xml = file_get_contents("config.xml"); 
+        $xml = file_get_contents('PHPDataGrid\config.xml'); 
+        //$xml = file_get_contents('C:\Archivos de programa\Apache Software Foundation\Apache2.2\htdocs\SQLFrame\PHPDataGrid\config.xml'); 
         $DOM = new DOMDocument('1.0', 'utf-8');
         $DOM->loadXML($xml);
         $groupsby = $DOM->getElementsByTagName('groupby'); 
         //$xml = simplexml_load_file("config.xml");//new SimpleXMLElement("config.xml");
         foreach ($groupsby as $gby) {
-            $group = new groupby($gby->nodeValue, $gby->getAttribute('posicion'), $gby->getAttribute('class')); 
+            $group = new groupby($gby->nodeValue, $gby->getAttribute('posicion'), $gby->getAttribute('class'), $gby->getAttribute('total')); 
             array_push($this->groups, $group);
         }
         $sumatorios = $DOM->getElementsByTagName('sumatorio'); 
@@ -41,7 +42,7 @@ class SQLFrame {
             }  
         }
     }
-    public function add($row,$result){
+    public function add($row,$result,&$array_gif,&$linea,&$img,&$pagina,$rand){
         $i=0;
         $reseteado=false;
         $groupsprintar = array();
@@ -81,22 +82,23 @@ class SQLFrame {
             }
             $i++;
         }
-        $this->printar($groupsprintar,0,$row,$result);
+        $this->printar($groupsprintar,0,$row,$result,$array_gif,$linea,$img,$pagina,$rand);
     }
-    function printar($groups,$i,$row=NULL,$result=NULL){
+    function printar($groups,$i,$row=NULL,$result=NULL,$array_gif,&$linea,&$img,&$pagina,$rand){
         if($i<count($groups)){
             $i++;
-            $this->printar($groups,$i,$row,$result);
+            $this->printar($groups,$i,$row,$result,$array_gif,$linea,$img,$pagina,$rand);
             $i--;
             $group = $groups[$i];
-            $group->printar($this->tipo);
+            $group->printar($this->tipo,$linea,$img);
+            comprobar_tamaño($img,$linea,$array_gif,$pagina,$rand);
+            $linea++;
             $group->reset();
             $group->sum($row,$result);
         }
     }
-    function printar_todos(){
-        $this->printar($this->groups,0);
-        $group =$this->groups[0];
+    function printar_todos(&$array_gif,&$linea,&$img,&$pagina,$rand){
+        $this->printar($this->groups,0,NULL,NULL,$array_gif,$linea,$img,$pagina,$rand);
     }
     
 }
