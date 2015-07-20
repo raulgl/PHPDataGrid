@@ -19,11 +19,13 @@ class groupby {
     var $sumatorios;
     var $actual;
     var $class;
-    function groupby($nom,$pos,$class=''){
+    var $total;
+    function groupby($nom,$pos,$class='',$total=''){
         $this->nombre=trim($nom);
         $this->posicion=$pos;
         $this->sumatorios = array();
         $this->class = $class;
+        $this->total = $total;
     }
     public function add($nombre,$posicion,$contador){
         $suma = new Sumatorio($nombre,$posicion,$contador);
@@ -52,13 +54,32 @@ class groupby {
             return false;
         }
     }
-    public function printar($tipo){
+    public function printar($tipo,&$linea,&$img){
         if(strcmp($tipo, "html")==0){
             $this->printar_html();
         }
-        else{
+        else if(strcmp($tipo, "csv")==0){
            $this->printar_csv(); 
         }
+        else{
+            $this->printar_pdf($linea,$img);
+            
+        }
+    }
+    public function printar_pdf($linea,$img){
+        $xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
+        $parser = simplexml_load_file($xml);
+        foreach($parser as $cur) {
+            $dato = $cur->getName();
+            if(strcmp($dato, $this->total)==0){
+                $text=$cur["texto"];
+                print_pdf($img,$text,$cur,$linea);
+            }
+        }
+        foreach($this->sumatorios as $suma){
+            $suma->printar("pdf",$linea,$img);
+        } 
+        
     }
     public function printar_html(){
         echo "<tr class='$this->class'>";
