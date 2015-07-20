@@ -20,13 +20,14 @@ class DataGrid {
         $sqlframe = new SQLFrame($tipo);
         $con = conectar();
         $data = mysql_query("$query", $con) or die(mysql_error());
+        $rand = rand (5, 50);
         if(strcmp($tipo, "html")==0){
             echo "<table class='tabla'>";
             echo "<tr class='cabecera'>";
         }
         else if(strcmp($tipo, "pdf")==0){
             $pagina=0;
-            $rand = rand (5, 50);
+            
             $img = crear_gif($pagina,$rand);
         }
         if(strcmp($tipo, "pdf")!=0){
