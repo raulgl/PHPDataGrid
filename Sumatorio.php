@@ -34,12 +34,31 @@ class Sumatorio {
     public function reset(){
         $this->total=0;
     }
-    public function printar($tipo){
+    public function printar($tipo,$linea,&$img){
         if(strcmp($tipo, "html")==0){
             $this->printar_html();
         }
-        else{
+        else if(strcmp($tipo, "csv")==0){
             $this->printar_csv();
+        }
+        else{
+            $this->printar_pdf($linea,$img);
+        }
+    }
+    public function printar_pdf($linea,&$img){
+        $xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
+        $parser = simplexml_load_file($xml);
+        foreach($parser as $cur) {
+            $dato = $cur->getName();
+            if(strcmp($dato, $this->nombre)==0){
+                if(is_float($this->total+0)){
+                    $text = number_format($this->total,2);
+                }
+                else{
+                    $text=$this->total;
+                }
+                print_pdf($img,$text,$cur,$linea);
+            }
         }
     }
     public function printar_html(){
