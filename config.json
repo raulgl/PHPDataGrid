@@ -1,0 +1,17 @@
+{"groupby":[
+    {"nombre":"TOTAL","posicion":0, "class":"normalr", "total":"total"},
+    {"nombre":"Actividad","posicion":1, "class":"normalr", "total":"total_actividad"},
+    {"nombre":"Descripcion","posicion":2, "class":"normalr", "total":"total_espectaculo"},
+    {"nombre":"Fecha","posicion":3, "class":"normalr", "total":"totalfecha"}
+],
+"sumatorio":[
+    {"nombre":"vendidas_funciones","posicion":8},
+    {"nombre":"ingresos_funciones","posicion":9},
+    {"nombre":"inv_funciones","posicion":10},
+    {"nombre":"val_inv","posicion":11},
+    {"nombre":"ventas_abono","posicion":12},
+    {"nombre":"ingresos_abono","posicion":13},
+    {"nombre":"inv_abono","posicion":14},
+    {"nombre":"val_inv_abono","posicion":15}
+]
+}
