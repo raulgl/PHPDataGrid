@@ -156,5 +156,10 @@ El tag correspondiente informa de que texto, que fontsize, que fonttipe y donde 
 de ese group by.
 A parte la carpeta informes y la carpeta fonts, hay que crear la carpeta .pdf, donde se guardan los pdf generados y la carpeta temp
 donde se guardan .gif temporales.
+Ademas hay que modificar el config.ini añadiendo:
+[general]
+n_tickets_pag=20
+numero de lineas que van a estar en una misma pagina.
+
 
  
