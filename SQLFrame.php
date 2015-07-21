@@ -19,7 +19,7 @@ class SQLFrame {
     function SQLFrame($tipo){
         $this->tipo=$tipo;
         $this->groups = array();
-        $xml = file_get_contents('PHPDataGrid\config.xml'); 
+        //$xml = file_get_contents('PHPDataGrid\config.xml'); 
         //$xml = file_get_contents('C:\Archivos de programa\Apache Software Foundation\Apache2.2\htdocs\SQLFrame\PHPDataGrid\config.xml'); 
         //$DOM = new DOMDocument('1.0', 'utf-8');
         //$DOM->loadXML($xml);*/
