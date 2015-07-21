@@ -21,24 +21,29 @@ class SQLFrame {
         $this->groups = array();
         $xml = file_get_contents('PHPDataGrid\config.xml'); 
         //$xml = file_get_contents('C:\Archivos de programa\Apache Software Foundation\Apache2.2\htdocs\SQLFrame\PHPDataGrid\config.xml'); 
-        $DOM = new DOMDocument('1.0', 'utf-8');
-        $DOM->loadXML($xml);
-        $groupsby = $DOM->getElementsByTagName('groupby'); 
+        //$DOM = new DOMDocument('1.0', 'utf-8');
+        //$DOM->loadXML($xml);*/
+        //$groupsby = $DOM->getElementsByTagName('groupby'); 
         //$xml = simplexml_load_file("config.xml");//new SimpleXMLElement("config.xml");
+        $jsonfile = file_get_contents('PHPDataGrid\config.json'); 
+        $json = json_decode($jsonfile,true);
+        $groupsby = $json['groupby'];
         foreach ($groupsby as $gby) {
-            $group = new groupby($gby->nodeValue, $gby->getAttribute('posicion'), $gby->getAttribute('class'), $gby->getAttribute('total')); 
+            $group = new groupby($gby['nombre'], $gby['posicion'], $gby['class'], $gby['total']); 
             array_push($this->groups, $group);
         }
-        $sumatorios = $DOM->getElementsByTagName('sumatorio'); 
+        $sumatorios = $json['sumatorio'];
+        //$sumatorios = $DOM->getElementsByTagName('sumatorio'); 
         foreach ($sumatorios as $suma) {
             foreach($this->groups as $group){
-                $group->add($suma->nodeValue,$suma->getAttribute('posicion'),false);                
+                $group->add($suma['nombre'],$suma['posicion'],false);                
             }  
         }
-        $contadores = $DOM->getElementsByTagName('contador');
+        $contadores = $json['$contador'];
+        //$contadores = $DOM->getElementsByTagName('contador');
         foreach ($contadores as $cont) {
             foreach($this->groups as $group){
-                $group->add($cont->nodeValue,$cont->getAttribute('posicion'),true);                
+                $group->add($cont['nombre'],$cont->getAttribute['posicion'],true);                
             }  
         }
     }
