@@ -38,7 +38,7 @@ Un .ini ejemplo sería:
 ip=127.0.0.1:3306; ip y puerto del servidor de BD (la BD es un mysql que está en mi ordenador
 user=root ; usuario de la BD
 pswd=patata ; password de la BD
-name=prostr ;nombre de la BD 
+name=pros ;nombre de la BD 
 Una vez configurado el .xml y .ini (el xml tiene que llamarse config.xml y el .ini config.ini), solo se tiene que llamar a DataGrid::printar($query); donde $query es la consulta.
 
 Pensemos ahora que lo que devuelve la BD no es la recaudacion espectaculo a espectaculo, sino butaca a butaca.Es decir:
@@ -171,7 +171,21 @@ Ahora el config no será un .xml sino un .json:
     {"nombre":"butaca","posicion":3},
 ]
 }
-
-
+NUEVA ACTUALIZACION
+fusionados en config.json y el config.ini en el config.fson:
+{"groupby":[
+    {"nombre":"TOTAL","posicion":0, "class":"normalr", "total":"total"},
+    {"nombre":"Actividad","posicion":1, "class":"normalr", "total":"total_actividad"},
+    {"nombre":"Espectaculo","posicion":2, "class":"normalr", "total":"total_espectaculo"},
+],
+"sumatorio":[
+    {"nombre":"recaudacion(euros)","posicion":4},
+],
+"contador":[
+    {"nombre":"butaca","posicion":3},
+],
+"bbdd":{"ip":"127.0.0.1:3306","user":"root","pswd":"patata","name":"pros"},
+"n_tickets_pag":20
+}
 
  
