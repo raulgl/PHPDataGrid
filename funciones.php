@@ -54,14 +54,19 @@ function cargar_configuracion() {
 	
 	
 	if(file_exists($config_file)) {
-		$ini_array = parse_ini_file($config_file, true);
-		
+		//$ini_array = parse_ini_file($config_file, true);
+		$jsonfile = file_get_contents('PHPDataGrid\config.json'); 
+                $json = json_decode($jsonfile,true);
 		//bbdd
-		$dababase_ip = get_ini($ini_array, "bbdd", "ip");
-		$dababase_user = get_ini($ini_array, "bbdd", "user");
-		$dababase_pswd = get_ini($ini_array, "bbdd", "pswd");
-		$dababase_name = get_ini($ini_array, "bbdd", "name");
-                $n_tickets_pag = get_ini($ini_array, "general", "n_tickets_pag");
+		//$dababase_ip = get_ini($ini_array, "bbdd", "ip");
+                $dababase_ip = $json["bbdd"]["ip"];
+		//$dababase_user = get_ini($ini_array, "bbdd", "user");
+                $dababase_user = $json["bbdd"]["user"];
+		//$dababase_pswd = get_ini($ini_array, "bbdd", "pswd");
+                $dababase_pswd = $json["bbdd"]["pswd"];
+		//$dababase_name = get_ini($ini_array, "bbdd", "name");
+                $dababase_name = $json["bbdd"]["name"];
+                $n_tickets_pag = $json["n_tickets_pag"];
 		
 				
 	}	
