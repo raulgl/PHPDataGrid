@@ -13,5 +13,7 @@
     {"nombre":"ingresos_abono","posicion":13},
     {"nombre":"inv_abono","posicion":14},
     {"nombre":"val_inv_abono","posicion":15}
-]
+],
+"bbdd":{"ip":"127.0.0.1:3306","user":"root","pswd":"patata","name":"prostr"},
+"n_tickets_pag":20
 }
