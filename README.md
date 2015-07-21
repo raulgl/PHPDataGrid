@@ -96,3 +96,65 @@ A partir de ahora para exportar a HTML, la llamada tiene que ser:
 DataGrid::printar($query,"html");
 Si se quiere exportar a CSV entonces la llamada es:
 DataGrid::printar($query,"csv");
+NUEVA ACTUALIZACION: exportar a PDF.A parte de llamar a DataGrid::printar($query,"pdf");
+En el PHPDataGrid/informes tiene que haber:
+PDF.gif: .gif con la plantilla que usara el programa para montar el pdf. Basicamente cada vez que el programa necesite una nueva
+pagina para el informe  cojera este .gif escribira los datos del informe y lo guardar para montar el pdf con los .gif que ha ido cogiendo.
+PDF.xml:
+un xml donde se dice donde se escribe el campo de la Base de datos en la pagina:
+Tiene esta pinta:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<informe>
+	<offset y="250"/>
+        <estatico x="5"  dir="0" fonttype="ArialBlack.ttf" fontsize="17" texto="ACTIVIDAD"/>
+	<estatico x="150"  dir="0" fonttype="ArialBlack.ttf" fontsize="17" texto="ESPECTACULO"/>
+	<estatico x="450"  dir="0" fonttype="ArialBlack.ttf" fontsize="17" texto="FILA"/>
+	<estatico x="580"  dir="0" fonttype="ArialBlack.ttf" fontsize="17" texto="BUTACA"/>
+	<estatico x="700"  dir="0" fonttype="ArialBlack.ttf" fontsize="17" texto="V. FUNC."/>
+	<estatico x="820"  dir="0" fonttype="ArialBlack.ttf" fontsize="17" texto="RECAUDACION"/>
+	<offsetres linea="50" y="350" />
+        <Actividad x="5"  dir="0" fonttype="verdana.ttf" fontsize="15" max="15"/>
+        <total x="5"  dir="0" fonttype="verdana.ttf" fontsize="15" texto="TOTAL"/>
+	<Descripcion x="150"  dir="0" fonttype="verdana.ttf" fontsize="15" />
+        <total_actividad x="150"  dir="0" fonttype="verdana.ttf" fontsize="15" texto="TOTAL"/>
+	<Fila x="450"  dir="0" fonttype="verdana.ttf" fontsize="15"/>
+        <total_espectaculo x="450"  dir="0" fonttype="verdana.ttf" fontsize="15" r="255" texto="TOTAL"/>
+	<Butaca x="580"  dir="0" fonttype="verdana.ttf" fontsize="15"/>        
+	<recaudacion x="750"  dir="0" fonttype="verdana.ttf" fontsize="15"/>    
+		
+</informe>
+tag offset: nos ice cuanto espacio en vertical hay que dejar desde el inicio de la pagina hasta empezar a escribir los datos del informe
+tag estatico: printa lo que hay en el texto en la posicion x y como posicion y la del offset.Esto se utiliza para la cabecera del informe.
+tag offsetres: en el atributo linea nos dice cuantos pixeles ocupa cada linea del informe y en el atributo y nos indica cuanto espacion hay
+que dejar desde el principio de la pagina hasta empezar a escribir los datos del informe(offset+ linea de la cabecera+ espacio de la cabecera).
+tag Actividad,Descripcio,Fila,Butaca,recaudacion: para cada campo de la consulta a la BD nos dice en que posicion x debe ir. la posicion y la 
+calcula a partir de la linea en que esta el atributo linea de offsetres y la y de offsetres.
+los campos total,total_actividad,total_espectaculo los explicaremos mas adelante.
+Ademas los tag pueden tener los siguientes atributos:
+fonttype: tipo de letra que se va ha utilizar para escribir el dato en el pdf. Los tipos de letra que hay ArialBlack,itcedscr,times,verdana
+fontsize: tamaño de letra que se va ha utilizar para escribir el dato en el pdf.
+el config.xml tendrá esta pinta:
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+    <groupsby>
+        <groupby posicion='0' class='normalr' total='total'>
+            TOTAL           
+        </groupby>
+        <groupby posicion='1' class='normalr' total='total_actividad'>
+            Actividad           
+        </groupby>
+        <groupby posicion='2' class='normalr' total='total_espectaculo'>
+            Descripcion           
+        </groupby>
+        <groupby posicion='3' class='normalr' total='totalfecha'>
+            Fecha           
+        </groupby>
+    </groupsby>
+...
+a los tags groupby se les añade el atributo total. Este atributo nos dice que tag del PDF.xml corresponde este group by.
+El tag correspondiente informa de que texto, que fontsize, que fonttipe y donde colocar el texto que indica que la linea es el sumatorio
+de ese group by.
+A parte la carpeta informes y la carpeta fonts, hay que crear la carpeta .pdf, donde se guardan los pdf generados y la carpeta temp
+donde se guardan .gif temporales.
+
+ 
