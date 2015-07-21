@@ -144,10 +144,7 @@ el config.xml tendrá esta pinta:
             Actividad           
         </groupby>
         <groupby posicion='2' class='normalr' total='total_espectaculo'>
-            Descripcion           
-        </groupby>
-        <groupby posicion='3' class='normalr' total='totalfecha'>
-            Fecha           
+            Espectaculo          
         </groupby>
     </groupsby>
 ...
@@ -160,6 +157,21 @@ Ademas hay que modificar el config.ini añadiendo:
 [general]
 n_tickets_pag=20
 numero de lineas que van a estar en una misma pagina.
+NUEVA ACTUALIZACION
+Ahora el config no será un .xml sino un .json:
+{"groupby":[
+    {"nombre":"TOTAL","posicion":0, "class":"normalr", "total":"total"},
+    {"nombre":"Actividad","posicion":1, "class":"normalr", "total":"total_actividad"},
+    {"nombre":"Espectaculo","posicion":2, "class":"normalr", "total":"total_espectaculo"},
+],
+"sumatorio":[
+    {"nombre":"recaudacion(euros)","posicion":4},
+],
+"contador":[
+    {"nombre":"butaca","posicion":3},
+]
+}
+
 
 
  
