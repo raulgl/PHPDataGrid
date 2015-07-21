@@ -133,6 +133,7 @@ los campos total,total_actividad,total_espectaculo los explicaremos mas adelante
 Ademas los tag pueden tener los siguientes atributos:
 fonttype: tipo de letra que se va ha utilizar para escribir el dato en el pdf. Los tipos de letra que hay ArialBlack,itcedscr,times,verdana
 fontsize: tamaño de letra que se va ha utilizar para escribir el dato en el pdf.
+max: maximo de caracteres que puede tener este campo.Si el campo tiene mas caracteres lo corta el informe.
 el config.xml tendrá esta pinta:
 <?xml version="1.0" encoding="UTF-8"?>
 <xml>
