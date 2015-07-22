@@ -16,7 +16,10 @@ class SQLFrame {
     var $groups;
     var $tipo;
     static $pos_file=0;
+    static $json;
     function SQLFrame($tipo){
+        $jsonfile = file_get_contents(realpath(dirname(__FILE__)).'\\informes\\PDF.json'); 
+        SQLFrame::$json = json_decode($jsonfile,true);
         $this->tipo=$tipo;
         $this->groups = array();
         //$xml = file_get_contents('PHPDataGrid\config.xml'); 
