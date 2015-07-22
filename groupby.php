@@ -67,15 +67,12 @@ class groupby {
         }
     }
     public function printar_pdf($linea,$img){
-        $xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
-        $parser = simplexml_load_file($xml);
-        foreach($parser as $cur) {
-            $dato = $cur->getName();
-            if(strcmp($dato, $this->total)==0){
-                $text=$cur["texto"];
-                print_pdf($img,$text,$cur,$linea);
-            }
-        }
+        /*$xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
+        $parser = simplexml_load_file($xml);*/
+        $json = SQLFrame::$json;
+        $cur=$json[$this->total];
+        $text=$cur["texto"];
+        print_pdf($img,$text,$cur,$linea);
         foreach($this->sumatorios as $suma){
             $suma->printar("pdf",$linea,$img);
         } 
