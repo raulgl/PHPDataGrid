@@ -46,20 +46,18 @@ class Sumatorio {
         }
     }
     public function printar_pdf($linea,&$img){
-        $xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
-        $parser = simplexml_load_file($xml);
-        foreach($parser as $cur) {
-            $dato = $cur->getName();
-            if(strcmp($dato, $this->nombre)==0){
-                if(is_float($this->total+0)){
-                    $text = number_format($this->total,2);
-                }
-                else{
-                    $text=$this->total;
-                }
-                print_pdf($img,$text,$cur,$linea);
-            }
+        /*$xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
+        $parser = simplexml_load_file($xml);*/
+         
+        $json = SQLFrame::$json;
+        $cur=$json[$this->nombre];
+        if(is_float($this->total+0)){
+            $text = number_format($this->total,2);
         }
+        else{
+            $text=$this->total;
+        }
+        print_pdf($img,$text,$cur,$linea);
     }
     public function printar_html(){
         while(SQLFrame::$pos_file<$this->posicion){
