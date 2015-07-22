@@ -87,7 +87,6 @@ function crear_gif($pagina,$rand){
     $gif = realpath(dirname(__FILE__)).'\\informes\\PDF.GIF';
     $result_img = realpath(dirname(__FILE__)).'\\temp\\'.$rand.$pagina.'.GIF';
     $ori = imagecreatefromgif($gif);
-    $xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
     $result = NULL;
     if($ori) {
 	$width = imagesx($ori);
@@ -95,7 +94,7 @@ function crear_gif($pagina,$rand){
 	$img =  imagecreatetruecolor($width, $height);
 	if($img) {
             if(imagecopy($img, $ori, 0, 0, 0, 0, $width, $height)) {
-		cabecera_informe($img,$xml);
+		cabecera_informe($img);
             }
 	}
         imagedestroy($ori);			
@@ -123,24 +122,25 @@ function add_row($img,$row,$data,$linea){
     $i=0;
     while($i<mysql_num_fields($data)){
         $name = mysql_field_name($data,$i);
-        $xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
-        $parser = simplexml_load_file($xml);
-	foreach($parser as $current) {
-            $dato = $current->getName();
-            if(strcmp($dato, $name)==0){
-                if(is_float($row[mysql_field_name($data,$i)]+0)){
-                   $text = number_format($row[mysql_field_name($data,$i)],2);
+        /*$xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
+        $parser = simplexml_load_file($xml);*/
+        
+        $json = SQLFrame::$json;
+        if(isset ($json[$name])){
+            $current=$json[$name];
+            if(is_float($row[mysql_field_name($data,$i)]+0)){
+                $text = number_format($row[mysql_field_name($data,$i)],2);
+            }
+            else{
+                if(isset($current["max"])){
+                    $text = substr($row[mysql_field_name($data,$i)],0,intval($current["max"]));
                 }
                 else{
-                    if($current["max"]){
-                        $text = substr($row[mysql_field_name($data,$i)],0,intval($current["max"]));
-                    }
-                    else{
-                        $text = $row[mysql_field_name($data,$i)];
-                    }
+                    $text = $row[mysql_field_name($data,$i)];
                 }
-                print_pdf($img,$text,$current,$linea);
             }
+            print_pdf($img,$text,$current,$linea);
+            
         }
         $i++;
     }
@@ -150,7 +150,7 @@ function add_row($img,$row,$data,$linea){
 function print_pdf($img,$text,$current,$linea){
     global $path_fonts;
     $x = $current["x"];
-    $xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
+    /*$xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
     $parser = simplexml_load_file($xml);
     foreach($parser as $cur) {
         $dato = $cur->getName();
@@ -159,20 +159,43 @@ function print_pdf($img,$text,$current,$linea){
             $tlinea = $cur["linea"];
             $y = $linea*$tlinea+$y;
         }
+    }*/
+   
+    $json = SQLFrame::$json;
+    $y = $json["offsetres"]["y"];
+    $tlinea = $json["offsetres"]["linea"];
+    $y = $linea*$tlinea+$y;
+    if(isset($current["dir"])){
+        $dir = $current["dir"];
     }
-    $dato = $current->getName();
-    $dir = $current["dir"];
-    $align = $current["align"];
+    else{
+        $dir=0;
+    }
     $font = $current["fonttype"];
     $fsize = $current["fontsize"];
-    $R = intval($current["r"]);
-    $G = intval($current["g"]);
-    $B = intval($current["b"]);	
+    if(isset ($current["r"])){
+        $R = intval($current["r"]);
+    }
+    else{
+        $R=0;
+    }
+    if(isset ($current["g"])){
+        $G = intval($current["g"]);
+    }
+    else{
+        $G=0;
+    }
+    if(isset ($current["b"])){
+        $B = intval($current["b"]);
+        
+    }
+    else{
+        $B=0;
+    }
     if(!$R || strlen($R) == 0) $R = 0;
     if(!$G || strlen($G) == 0) $G = 0;
     if(!$B || strlen($B) == 0) $B = 0;
-    $color = imagecolorallocate($img, $R, $G, $B);
-    
+    $color = imagecolorallocate($img, $R, $G, $B);    
     $text = utf8_encode($text);
     $rfont = $path_fonts.$font;
     $brect = imagettfbbox((double)$fsize, (double)$dir, $rfont, $text);
@@ -181,64 +204,54 @@ function print_pdf($img,$text,$current,$linea){
 }
     
 
-function cabecera_informe($img,$xml){
+function cabecera_informe($img){
 		global $path_fonts;
-		$parser = simplexml_load_file($xml);
+		//$parser = simplexml_load_file($xml);
 		$y = 200;
-		foreach($parser as $current) {
-			$dato = $current->getName();
-			if($dato) {
-				$x = $current["x"];
-				
-				$dir = $current["dir"];
-				$texto = $current["texto"];
-				$align = $current["align"];
-				$font = $current["fonttype"];
-				$fsize = $current["fontsize"];
-				$reduccion = $current["reduccion"];
-				$R = $current["r"];
-				$G = $current["g"];
-				$B = $current["b"];			
-				$text = '';
-
-				if(!$R || strlen($R) == 0) $R = 0;
-				if(!$G || strlen($G) == 0) $G = 0;
-				if(!$B || strlen($B) == 0) $B = 0;
-				if(!$texto || strlen($texto) == 0) $texto = "#";
+                
+                $json = SQLFrame::$json;
+                $y = $json["offset"]["y"];
+		foreach($json["estatico"] as $current) {
+                    $x = $current["x"];
+                    $dir = 0;
+                    $texto = $current["texto"];
+                    $font = $current["fonttype"];
+                    $fsize = $current["fontsize"];
+                    if(isset ($current["r"])){
+                        $R = intval($current["r"]);
+                    }
+                    else{
+                        $R=0;
+                    }
+                    if(isset ($current["g"])){
+                        $G = intval($current["g"]);
+                    }
+                    else{
+                        $G=0;
+                    }
+                    if(isset ($current["b"])){
+                        $B = intval($current["b"]);
+        
+                    }
+                    else{
+                        $B=0;
+                    }		
+                    $text = '';
+                    if(!$R || strlen($R) == 0) $R = 0;
+                    if(!$G || strlen($G) == 0) $G = 0;
+                    if(!$B || strlen($B) == 0) $B = 0;
+                    if(!$texto || strlen($texto) == 0) $texto = "#";
+                    $text = $texto;
+                    if(strlen($text)>0 && strlen($x)>0 && strlen($y)>0 && strlen($dir)>0 && strlen($fsize)>0 && strlen($font)>0) {
+                        $color = imagecolorallocate($img, $R, $G, $B);
+                        $text = utf8_encode($text);
+                        $rfont = $path_fonts.$font;
+                        $brect = imagettfbbox((double)$fsize, (double)$dir, $rfont, $text);
+                        $res = imagettftext($img, (double)$fsize, (double)$dir, (double)$x, (double)$y, $color, $rfont, $text);
 			
-				switch($dato)
-				{
-					case 'estatico':
-						$text = $texto;
-						break;	
-					case 'offset':
-						$y = $current["y"];
-						break;						
-				}
-			
-				if(strlen($text)>0 && strlen($x)>0 && strlen($y)>0 && strlen($dir)>0 && strlen($fsize)>0 && strlen($font)>0) {
-					$color = imagecolorallocate($img, $R, $G, $B);
-					$text = utf8_encode($text);
-					$rfont = $path_fonts.$font;
-					$brect = imagettfbbox((double)$fsize, (double)$dir, $rfont, $text);
-				
-					switch($align)
-					{
-						case 'right': //alineado horizontal a la derecha
-							$x-= ($brect[2]>$brect[4]) ? $brect[2] : $brect[4];
-							break;
-						case 'bottom': //alineado vertical abajo
-							$y-= ($brect[1]>$brect[3]) ? $brect[1] : $brect[3];
-							break;
-						case 'center': //centrado
-							$x-= ($brect[2]>$brect[4]) ? $brect[2]/2 : $brect[4]/2;
-							$y-= ($brect[1]>$brect[3]) ? $brect[1]/2 : $brect[3]/2;
-							break;				
-					}
-					$res = imagettftext($img, (double)$fsize, (double)$dir, (double)$x, (double)$y, $color, $rfont, $text);
-				}
-			}
+                    }
 		}
+                
 	}
 
 
