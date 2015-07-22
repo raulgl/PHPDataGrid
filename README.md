@@ -188,5 +188,26 @@ fusionados en config.json y el config.ini en el config.fson:
 "bbdd":{"ip":"127.0.0.1:3306","user":"root","pswd":"patata","name":"pros"},
 "n_tickets_pag":20
 }
+NUEVA ACTUALIZACION
+El pdf.xml pasa a ser un json:
+"offset":{"y":250},
+    "estatico":[
+        {"x":5,"fonttype":"ArialBlack.ttf","fontsize":17,"texto":"ACTIVIDAD"},
+        {"x":150,"fonttype":"ArialBlack.ttf","fontsize":17,"texto":"ESPECTACULO"},
+        {"x":450,"fonttype":"ArialBlack.ttf","fontsize":17,"texto":"FILA"},
+        {"x":580,"fonttype":"ArialBlack.ttf","fontsize":17,"texto":"BUTACA"},
+        {"x":700,"fonttype":"ArialBlack.ttf","fontsize":17,"texto":"V. FUNC."},
+        {"x":820,"fonttype":"ArialBlack.ttf","fontsize":17,"texto":"RECAUDACION."}
+    ],
+    "offsetres":{"linea":"50","y":350},
+    "Actividad":{"x":5,"fonttype":"verdana.ttf","fontsize":15,"max":15},
+    "total":{"x":5,"fonttype":"verdana.ttf","fontsize":15,"texto":"TOTAL"},
+    "Descripcion":{"x":150,"fonttype":"verdana.ttf","fontsize":15},
+    "total_actividad":{"x":150,"fonttype":"verdana.ttf","fontsize":15,"texto":"TOTAL"},
+    "Fila":{"x":450,"fonttype":"verdana.ttf","fontsize":15},
+    "total_espectaculo":{"x":450,"fonttype":"verdana.ttf","fontsize":15,"texto":"TOTAL","r":255},
+    "Butaca":{"x":580,"fonttype":"verdana.ttf","fontsize":15},
+    "recaudacion":{"x":580,"fonttype":"verdana.ttf","fontsize":15,"texto":"TOTAL"}
+}
 
  
