@@ -29,6 +29,7 @@ class DataGrid {
         $con = conectar();
         //guardamos en data lo que nos viene de la base de datos
         DataGrid::$data = mysql_query("$query", $con) or die(mysql_error());
+        //Si el tipo es pdf creamos el objeto pdf para guardarlo
         if(strcmp($tipo, "pdf")==0){
             DataGrid::$pdf = new PDF(rand (5, 50));
         }
