@@ -58,11 +58,7 @@ class SQLFrame {
     }
     /*
      * funcion que se llama cada vez que se añade una fila de la BD al listado.
-     * Se le pasa la fila que se ha añadido, el resultado de la consulta para saber el 
-     * nombre de cada columna,un array con los gif que se han guardado para montrar el PDF
-     * -en el caso de que el tipo sea PDF-, linea actual del listado, gif donde esta la pagina 
-     * actual del listado-solo para PFD-, pagina actual del listado-solo para el PDF y el nombre 
-     * final del PDF-solo para el PDF.
+     * Se le pasa la fila que se ha listado en el informe
      * Basicamente mira en orden si algun dato  de los campos que estan en los group by es diferente del anterior y por lo tanto hay que
      * hacer el resumen de ese groupby. Si esto es asi guardamos los groupby en un array para luego imprimirlo este groupby y los que
      * tienen por debajo y decimos que el group by anterior es ese campo nuevo para el siguiente add.Sino con los datos de la BD actualiamos 
@@ -118,13 +114,6 @@ class SQLFrame {
      * groups: array de groupsby
      * i: posicion actual del groupby
      * row: row que viene de la BD
-     * result:resultado de la BD. Sirve para ver los nombres de los campos de la BD
-     * PARA LA GENERACION DE PDF:
-     * array_gif: array donde se van guardando los gifs para luego montar el pdf
-     * linea: linea actual del listado
-     * img: gif donde esta la pagina actual
-     * pagina:numero de pagina actual
-     * rand:nombre del pdf
      */
     function printar($groups,$i,$row=NULL){
         if($i<count($groups)){
@@ -140,12 +129,7 @@ class SQLFrame {
         }
     }
     /**
-     * 
-     * @param array $array_gif: array
-     * @param type $linea
-     * @param type $img
-     * @param type $pagina
-     * @param type $rand
+     * imprime todos los group by.Imprime los ultimos groupby y el total
      */
     function printar_todos(){
         $this->printar($this->groups,0,NULL);
