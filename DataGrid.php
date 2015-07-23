@@ -33,10 +33,12 @@ class DataGrid {
         if(strcmp($tipo, "pdf")==0){
             DataGrid::$pdf = new PDF(rand (5, 50));
         }
+        //Si el tipo es html creamos la tabla y la fila donde iran los datos de la cabecera
         if(strcmp($tipo, "html")==0){
             echo "<table class='tabla'>";
             echo "<tr class='cabecera'>";
         }
+        /*Si no es el tipo pdf, printamos el nombre de las columnas de la BD, en pdf ya lo hace el cabecera informe*/
         if(strcmp($tipo, "pdf")!=0){
             $i=0;        
             while($i<mysql_num_fields(DataGrid::$data)){
@@ -55,6 +57,7 @@ class DataGrid {
                 echo "\n"; 
             }
         }
+        /*Para cada fila llamamos al add del sqlframe para ver si tiene que printar algun subtotal y printamos la fila*/
         while($row = mysql_fetch_assoc(DataGrid::$data)){ 
             
             $sqlframe->add($row);
@@ -87,6 +90,9 @@ class DataGrid {
             }
             else{
                 DataGrid::$pdf->add_row($row);
+                /*Para el pdf ademas incrementamos la linea en que estamos y miramos si hemos llegado al final de la pagina,
+                 * si hemos llegado creamo una nueva y guardamos la vieja en el array de gif.
+                 */
                 DataGrid::$pdf->add_linea();
                 DataGrid::$pdf->comprobar_tamaño();
             }
@@ -97,14 +103,15 @@ class DataGrid {
                 echo "\n"; 
             }
         }
+        /* printamos todos los groupby así tenemos los subtotales que quedaban y el TOTAL*/
         $sqlframe->printar_todos();
-        
+        /*para pdf añadimos al array de gif el gif actual, montamos el pdf con el array de gif y ponemos el html que muestra el pdf*/
         if(strcmp($tipo, "pdf")==0){
             DataGrid::$pdf->añadir_gif();
             $nompdf = DataGrid::$pdf->crear_PDF();
             DataGrid::printar_pdf($nompdf);
         }
-        
+        /* en html cerramos la tabla*/
         if(strcmp($tipo, "html")==0){
             echo "</table>";
         }
