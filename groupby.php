@@ -54,7 +54,7 @@ class groupby {
             return false;
         }
     }
-    public function printar($tipo,&$linea,&$img){
+    public function printar($tipo){
         if(strcmp($tipo, "html")==0){
             $this->printar_html();
         }
@@ -62,19 +62,19 @@ class groupby {
            $this->printar_csv(); 
         }
         else{
-            $this->printar_pdf($linea,$img);
+            $this->printar_pdf();
             
         }
     }
-    public function printar_pdf($linea,$img){
+    public function printar_pdf(){
         /*$xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
         $parser = simplexml_load_file($xml);*/
         $json = SQLFrame::$json;
         $cur=$json[$this->total];
         $text=$cur["texto"];
-        print_pdf($img,$text,$cur,$linea);
+        DataGrid::$pdf->print_pdf($text,$cur);
         foreach($this->sumatorios as $suma){
-            $suma->printar("pdf",$linea,$img);
+            $suma->printar("pdf");
         } 
         
     }
@@ -105,11 +105,11 @@ class groupby {
         echo "\n";
         SQLFrame::$pos_file=0;
     }
-    public function sum($row,$result){
+    public function sum($row){
         $i=0;
         $encontrado=false;
         foreach($this->sumatorios as $sum){
-            $sum->same($row,$result);          
+            $sum->same($row);          
         }       
     }
 }
