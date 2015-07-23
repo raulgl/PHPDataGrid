@@ -7,16 +7,20 @@
  */
 
 /**
- * Description of PDF
+ * Clase para crear un PDF
  *
  * @author ics_raul
  */
 class PDF {
-    var $rand;
-    var $img;
-    var $linea;
-    var $pagina;
-    var $array_gif;
+    var $rand;//nombre del pdf
+    var $img;//gif que se esta rellenado actualmente
+    var $linea;//linea en que se esta actualmente
+    var $pagina;//numero de pagina que se está rellenando actualmente
+    var $array_gif;//array de gif rellenados
+    /**
+     * constructor que inicializa el pdf
+     * @param type $rand: nombre del pdf
+     */
     function PDF($rand){
         $this->pagina=0;
         $this->rand=$rand;
@@ -25,9 +29,15 @@ class PDF {
         $this->array_gif= array();
         
     }
+    /**
+     * indica que se ha añadido una nueva linea al pdf. Se tiene que llamar cada vez que se rellena un linea, para ir a la siguiente
+     */
     function add_linea(){
         $this->linea++;
     }
+    /**
+     * crea un gif a partir del gif dado añadiendo la cabecera
+     */
     function crear_gif(){
         global $path_fonts;    
         $gif = realpath(dirname(__FILE__)).'\\informes\\PDF.GIF';
@@ -47,6 +57,10 @@ class PDF {
         }
         return $img;
     }
+    /**
+     * mira si el numero de lineas actual sobrepasa el permitido y si es asi añade el gif actual al array de gif
+     * , se crea un nuevo gif y se inicializa linea a 0 y se incrementa pagina
+     */
     function comprobar_tamaño(){
                 global $n_tickets_pag;
 		if($this->linea>=$n_tickets_pag){
@@ -57,6 +71,9 @@ class PDF {
 		}
 		
     }
+    /**
+     * añade el gif actual al array de gifs
+     */
     function añadir_gif(){
         $result_img = realpath(dirname(__FILE__)).'\\temp\\'.$this->rand.$this->pagina.'.GIF';
         if(imagegif($this->img, $result_img))
@@ -64,6 +81,10 @@ class PDF {
         array_push($this->array_gif, $result_ok);
         imagedestroy($this->img);
     }
+    /**
+     * printa la fila de la BD
+     * @param type $row:fila de la BD
+     */
     function add_row($row){
         $i=0;
         while($i<mysql_num_fields(DataGrid::$data)){
@@ -91,6 +112,12 @@ class PDF {
             $i++;
         }
     }
+    /**
+     * printa un texto determinado
+     * @global type $path_fonts: fuentes para printar el texto
+     * @param type $text:texto a printar
+     * @param type $current: atributos del texto para printarlo
+     */
     function print_pdf($text,$current){
         global $path_fonts;
         $x = $current["x"];
@@ -147,7 +174,11 @@ class PDF {
     
     }
     
-
+    /**
+     * añade la cabecera en un gif determinado
+     * @global type $path_fonts: fuentes para printar el texto
+     * @param type $img: imagen donde se va a poner la cabecera
+     */
     function cabecera_informe($img){
 		global $path_fonts;
 		//$parser = simplexml_load_file($xml);
@@ -197,6 +228,10 @@ class PDF {
 		}
                 
 	}
+        /**
+         * crea el pdf a partir del array de gif
+         * @return type:nombre que tendrá el pdf
+         */
         function crear_PDF(){
             $pdf_name = $this->rand.".pdf";
             $pdf = realpath(dirname(__FILE__)).'\\pdf\\'.$pdf_name;
