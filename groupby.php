@@ -103,7 +103,7 @@ class groupby {
         }
     }
     /**
-     * printa el groupby en pdf
+     * printa el groupby en pdf, para ello busca en el json el objeto que se llama igual que el y coge los atributos
      */
     public function printar_pdf(){
         /*$xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
