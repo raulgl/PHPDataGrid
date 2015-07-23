@@ -122,8 +122,10 @@ class SQLFrame {
             $i--;
             $group = $groups[$i];
             $group->printar($this->tipo);
-            DataGrid::$pdf->comprobar_tamaño();
-            DataGrid::$pdf->add_linea();
+            if(strcmp($this->tipo,"PDF")==0){
+                DataGrid::$pdf->comprobar_tamaño();
+                DataGrid::$pdf->add_linea();
+            }
             $group->reset();
             $group->sum($row);
         }
