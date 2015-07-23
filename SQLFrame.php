@@ -24,6 +24,7 @@ class SQLFrame {
      * una estructura de arrays y objetos
      */
     function SQLFrame($tipo){
+        /*parsea el json donde se configura las posiciones del informe en pdf*/
         $jsonfile = file_get_contents(realpath(dirname(__FILE__)).'\\informes\\PDF.json'); 
         SQLFrame::$json = json_decode($jsonfile,true);
         $this->tipo=$tipo;
