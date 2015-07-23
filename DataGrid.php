@@ -21,11 +21,17 @@ class DataGrid {
      *  se le introduce la consulta en sql y el tipo de formato en que se quiere importar:"pdf","csv" o "html"
      */
     public static function printar($query,$tipo){
+        //Cargamos los datos de la BD y el numero de lineas por pagina de config.json
         cargar_configuracion();
+        //inicializamos el SQLFrame pasandole el tipo en que queremos el informe
         $sqlframe = new SQLFrame($tipo);
+        //conectamos con la BD
         $con = conectar();
+        //guardamos en data lo que nos viene de la base de datos
         DataGrid::$data = mysql_query("$query", $con) or die(mysql_error());
-        DataGrid::$pdf = new PDF(rand (5, 50));
+        if(strcmp($tipo, "pdf")==0){
+            DataGrid::$pdf = new PDF(rand (5, 50));
+        }
         if(strcmp($tipo, "html")==0){
             echo "<table class='tabla'>";
             echo "<tr class='cabecera'>";
