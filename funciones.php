@@ -15,7 +15,7 @@ function get_ini($parser, $tag, $name) {
 	}
 	return $value;
 }
-function crear_PDF($array_gif,$rand){
+/*function crear_PDF($array_gif,$rand){
     $pdf_name = $rand.".pdf";
     $pdf = realpath(dirname(__FILE__)).'\\pdf\\'.$pdf_name;
     $gif = realpath(dirname(__FILE__)).'\\informes\PDF.GIF';
@@ -30,7 +30,7 @@ function crear_PDF($array_gif,$rand){
     }
     $opdf->Output($pdf);
     return $rand;
-}
+}*/
 function trace($data) {
 	global $path_logs;
 	
@@ -82,7 +82,7 @@ function conectar() {
 	mysql_query("use $dababase_name", $p_con) or die(mysql_error());
 	return $p_con;
 }
-function crear_gif($pagina,$rand){
+/*function crear_gif($pagina,$rand){
     global $path_fonts;    
     $gif = realpath(dirname(__FILE__)).'\\informes\\PDF.GIF';
     $result_img = realpath(dirname(__FILE__)).'\\temp\\'.$rand.$pagina.'.GIF';
@@ -118,28 +118,26 @@ function comprobar_tamaño(&$img,&$linea,&$array_gif,&$pagina,$rand){
 		}
 		
 }
-function add_row($img,$row,$data,$linea){
+function add_row($row,$linea){
     $i=0;
-    while($i<mysql_num_fields($data)){
-        $name = mysql_field_name($data,$i);
-        /*$xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
-        $parser = simplexml_load_file($xml);*/
+    while($i<mysql_num_fields(DataGrid::$data)){
+        $name = mysql_field_name(DataGrid::$data,$i);
         
         $json = SQLFrame::$json;
         if(isset ($json[$name])){
             $current=$json[$name];
-            if(is_float($row[mysql_field_name($data,$i)]+0)){
-                $text = number_format($row[mysql_field_name($data,$i)],2);
+            if(is_float($row[mysql_field_name(DataGrid::$data,$i)]+0)){
+                $text = number_format($row[mysql_field_name(DataGrid::$data,$i)],2);
             }
             else{
                 if(isset($current["max"])){
-                    $text = substr($row[mysql_field_name($data,$i)],0,intval($current["max"]));
+                    $text = substr($row[mysql_field_name(DataGrid::$data,$i)],0,intval($current["max"]));
                 }
                 else{
-                    $text = $row[mysql_field_name($data,$i)];
+                    $text = $row[mysql_field_name(DataGrid::$data,$i)];
                 }
             }
-            print_pdf($img,$text,$current,$linea);
+            print_pdf($text,$current,$linea);
             
         }
         $i++;
@@ -147,20 +145,9 @@ function add_row($img,$row,$data,$linea){
     
     
 }
-function print_pdf($img,$text,$current,$linea){
+function print_pdf($text,$current,$linea){
     global $path_fonts;
-    $x = $current["x"];
-    /*$xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
-    $parser = simplexml_load_file($xml);
-    foreach($parser as $cur) {
-        $dato = $cur->getName();
-        if(strcmp($dato, "offsetres")==0){
-            $y = $cur["y"];
-            $tlinea = $cur["linea"];
-            $y = $linea*$tlinea+$y;
-        }
-    }*/
-   
+    $x = $current["x"];   
     $json = SQLFrame::$json;
     $y = $json["offsetres"]["y"];
     $tlinea = $json["offsetres"]["linea"];
@@ -195,11 +182,11 @@ function print_pdf($img,$text,$current,$linea){
     if(!$R || strlen($R) == 0) $R = 0;
     if(!$G || strlen($G) == 0) $G = 0;
     if(!$B || strlen($B) == 0) $B = 0;
-    $color = imagecolorallocate($img, $R, $G, $B);    
+    $color = imagecolorallocate(DataGrid::$img, $R, $G, $B);    
     $text = utf8_encode($text);
     $rfont = $path_fonts.$font;
     $brect = imagettfbbox((double)$fsize, (double)$dir, $rfont, $text);
-    $res = imagettftext($img, (double)$fsize, (double)$dir, (double)$x, (double)$y, $color, $rfont, $text);				
+    $res = imagettftext(DataGrid::$img, (double)$fsize, (double)$dir, (double)$x, (double)$y, $color, $rfont, $text);				
     
 }
     
@@ -253,6 +240,6 @@ function cabecera_informe($img){
 		}
                 
 	}
-
+*/
 
 ?>
