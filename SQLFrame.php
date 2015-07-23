@@ -7,16 +7,22 @@
  */
 
 /**
- * Description of newPHPClass
+ * Framework que se encarga de hacer los resumenes según los campos de la BD puestos en el config.json
  *
  * @author ics_raul
  */
 require_once 'groupby.php';
 class SQLFrame {
-    var $groups;
-    var $tipo;
-    static $pos_file=0;
-    static $json;
+    var $groups;//array donde estan todos los groupby
+    var $tipo;//tipo de informe que se va a generar:"html","csv","pdf"
+    static $pos_file=0;//posicion actual dentro de la linea del informe
+    static $json;//objeto json parseado
+    /**
+     * constructor de la clase, incializa el tipo de formato en que se va a sacar la consulta.
+     * Crea un objeto groupby para cada groupby del json y los guarda en un array. Cada groupby
+     * tiene un array de objetos sumatorio, uno para cada sumatorio o contador del json.Asi el json pasa a ser
+     * una estructura de arrays y objetos
+     */
     function SQLFrame($tipo){
         $jsonfile = file_get_contents(realpath(dirname(__FILE__)).'\\informes\\PDF.json'); 
         SQLFrame::$json = json_decode($jsonfile,true);
@@ -50,7 +56,19 @@ class SQLFrame {
             }  
         }
     }
-    public function add($row,$result,&$array_gif,&$linea,&$img,&$pagina,$rand){
+    /*
+     * funcion que se llama cada vez que se añade una fila de la BD al listado.
+     * Se le pasa la fila que se ha añadido, el resultado de la consulta para saber el 
+     * nombre de cada columna,un array con los gif que se han guardado para montrar el PDF
+     * -en el caso de que el tipo sea PDF-, linea actual del listado, gif donde esta la pagina 
+     * actual del listado-solo para PFD-, pagina actual del listado-solo para el PDF y el nombre 
+     * final del PDF-solo para el PDF.
+     * Basicamente mira en orden si algun dato  de los campos que estan en los group by es diferente del anterior y por lo tanto hay que
+     * hacer el resumen de ese groupby. Si esto es asi guardamos los groupby en un array para luego imprimirlo este groupby y los que
+     * tienen por debajo y decimos que el group by anterior es ese campo nuevo para el siguiente add.Sino con los datos de la BD actualiamos 
+     * los datos de cada groupby.
+     */
+    public function add($row){
         $i=0;
         $reseteado=false;
         $groupsprintar = array();
@@ -59,15 +77,15 @@ class SQLFrame {
             $encontrado=false;            
             while($j<count($row) && !$encontrado){
                 $group = $this->groups[$i];   
-                if($group->mismo(mysql_field_name($result,$j))){
+                if($group->mismo(mysql_field_name(DataGrid::$data,$j))){
                     $encontrado=true;                    
-                    if($group->is_reset($row[mysql_field_name($result,$j)])){
+                    if($group->is_reset($row[mysql_field_name(DataGrid::$data,$j)])){
                         $reseteado=true;
                         array_push($groupsprintar,$group);
-                        $group->set_actual($row[mysql_field_name($result,$j)]);
+                        $group->set_actual($row[mysql_field_name(DataGrid::$data,$j)]);
                     }
                     else{
-                        $group->sum($row,$result);
+                        $group->sum($row);
                     }
                 }
                 $j++;
@@ -75,38 +93,62 @@ class SQLFrame {
             $i++;
         }
         $group = $this->groups[0];
-        $group->sum($row,$result);
+        $group->sum($row);
         while($i<count($this->groups)){
             $group = $this->groups[$i];
             array_push($groupsprintar,$group);            
             $encontrado=false;
             while($j<count($row) && !$encontrado){
                 $group = $this->groups[$i];
-                if($group->mismo(mysql_field_name($result,$j))){
+                if($group->mismo(mysql_field_name(DataGrid::$data,$j))){
                     $encontrado=true;
-                    $group->set_actual($row[mysql_field_name($result,$j)]);
+                    $group->set_actual($row[mysql_field_name(DataGrid::$data,$j)]);
                 }
                 $j++;
             }
             $i++;
         }
-        $this->printar($groupsprintar,0,$row,$result,$array_gif,$linea,$img,$pagina,$rand);
+        $this->printar($groupsprintar,0,$row);
     }
-    function printar($groups,$i,$row=NULL,$result=NULL,$array_gif,&$linea,&$img,&$pagina,$rand){
+    /**
+     * funcion que printa los groupsby que hay despues de la posicion i, printe,resetee y sume la row al groupby de la posicion i
+     * Esta es una llamada recursiva para que los totales por group by se impriman de abajo a arriba segun el orden del json y no de
+     * arriba a abajo.
+     * Esta funcion tiene los siguientes parametros:
+     * groups: array de groupsby
+     * i: posicion actual del groupby
+     * row: row que viene de la BD
+     * result:resultado de la BD. Sirve para ver los nombres de los campos de la BD
+     * PARA LA GENERACION DE PDF:
+     * array_gif: array donde se van guardando los gifs para luego montar el pdf
+     * linea: linea actual del listado
+     * img: gif donde esta la pagina actual
+     * pagina:numero de pagina actual
+     * rand:nombre del pdf
+     */
+    function printar($groups,$i,$row=NULL){
         if($i<count($groups)){
             $i++;
-            $this->printar($groups,$i,$row,$result,$array_gif,$linea,$img,$pagina,$rand);
+            $this->printar($groups,$i,$row);
             $i--;
             $group = $groups[$i];
-            $group->printar($this->tipo,$linea,$img);
-            comprobar_tamaño($img,$linea,$array_gif,$pagina,$rand);
-            $linea++;
+            $group->printar($this->tipo);
+            DataGrid::$pdf->comprobar_tamaño();
+            DataGrid::$pdf->add_linea();
             $group->reset();
-            $group->sum($row,$result);
+            $group->sum($row);
         }
     }
-    function printar_todos(&$array_gif,&$linea,&$img,&$pagina,$rand){
-        $this->printar($this->groups,0,NULL,NULL,$array_gif,$linea,$img,$pagina,$rand);
+    /**
+     * 
+     * @param array $array_gif: array
+     * @param type $linea
+     * @param type $img
+     * @param type $pagina
+     * @param type $rand
+     */
+    function printar_todos(){
+        $this->printar($this->groups,0,NULL);
     }
     
 }
