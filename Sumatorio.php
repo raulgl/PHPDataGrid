@@ -34,7 +34,7 @@ class Sumatorio {
     public function reset(){
         $this->total=0;
     }
-    public function printar($tipo,$linea=0,&$img=NULL){
+    public function printar($tipo){
         if(strcmp($tipo, "html")==0){
             $this->printar_html();
         }
@@ -42,10 +42,10 @@ class Sumatorio {
             $this->printar_csv();
         }
         else{
-            $this->printar_pdf($linea,$img);
+            $this->printar_pdf();
         }
     }
-    public function printar_pdf($linea,&$img){
+    public function printar_pdf(){
         /*$xml = realpath(dirname(__FILE__)).'\\informes\\PDF.xml';
         $parser = simplexml_load_file($xml);*/
          
@@ -57,7 +57,7 @@ class Sumatorio {
         else{
             $text=$this->total;
         }
-        print_pdf($img,$text,$cur,$linea);
+        DataGrid::$pdf->print_pdf($text,$cur);
     }
     public function printar_html(){
         while(SQLFrame::$pos_file<$this->posicion){
@@ -85,13 +85,13 @@ class Sumatorio {
         }
         SQLFrame::$pos_file++;
     }
-    public function same($row,$result){
+    public function same($row){
         $i=0;
         $encontrado=false;
         while($i<count($row) && !$encontrado){
-           if(strcmp(mysql_field_name($result,$i),$this->nombre)==0){
+           if(strcmp(mysql_field_name(DataGrid::$data,$i),$this->nombre)==0){
                $encontrado=true;
-               $this->add($row[mysql_field_name($result,$i)]);
+               $this->add($row[mysql_field_name(DataGrid::$data,$i)]);
            }
            $i++;
         }
