@@ -233,6 +233,7 @@ class PDF {
          * @return type:nombre que tendrá el pdf
          */
         function crear_PDF(){
+            $this->borrar_dir();
             $pdf_name = $this->rand.".pdf";
             $pdf = realpath(dirname(__FILE__)).'\\pdf\\'.$pdf_name;
             $gif = realpath(dirname(__FILE__)).'\\informes\PDF.GIF';
@@ -244,8 +245,19 @@ class PDF {
             $opdf->SetFillColor(255, 255, 255);		
             foreach($this->array_gif as $result_ok){
                 $opdf->Image($result_ok);
+                unlink($result_ok);
             }
             $opdf->Output($pdf);
             return $this->rand;
         }
+        function borrar_dir(){
+            $dir = realpath(dirname(__FILE__)).'\\pdf\\';
+            $handle = opendir(realpath(dirname(__FILE__)).'\\pdf\\'); 
+            while ($file = readdir($handle))  {
+                if (is_file($dir.$file)) { 
+                    unlink($dir.$file); 
+                }
+            }
+        } 
+        
     }
