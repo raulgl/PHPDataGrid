@@ -123,7 +123,7 @@ class SQLFrame {
             $i--;
             $group = $groups[$i];
             $group->printar($this->tipo);
-            if(strcmp($this->tipo,"PDF")==0){
+            if(strcmp($this->tipo,"pdf")==0){
                 DataGrid::$pdf->comprobar_tamaño();
                 DataGrid::$pdf->add_linea();
             }
